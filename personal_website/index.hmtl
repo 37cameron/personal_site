@@ -1,0 +1,382 @@
+  <style>
+    /* Funnel Display variable style class */
+    body, * {
+      font-family: "Funnel Display", sans-serif !important;
+      font-optical-sizing: auto;
+      font-weight: 300 !important;
+      font-style: normal;
+    }
+    /* Example: .funnel-display-bold { font-weight: 700; } */
+    /* Usage: <span class="funnel-display-main">Text</span> or <span class="funnel-display-bold">Bold Text</span> */
+    /* Funnel Display variable style class */
+    .funnel-display-main {
+      font-family: "Funnel Display", sans-serif;
+      font-weight: 300;
+      font-style: normal;
+    }
+  </style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cameron Light — Personal Site</title>
+
+  <!-- ✅ Google Font: Lexend Exa -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300..800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+html, body, header, .viewport, .panel {
+  width: 100vw !important;
+  max-width: 100vw !important;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+      --bg:#fff; --fg:#000; --nav-h:72px; --kelly:#4CBB17; --grey:#e6e6e6;
+      --banner-image: url('nature1.jpg');
+    
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+  /* font-family now set globally */
+      background:var(--bg);
+      color:var(--fg);
+    }
+    a{color:inherit;text-decoration:none}
+
+    /* === TOP BAR with banner image === */
+    header{
+  position:sticky;top:0;z-index:10;height:72px;
+  display:flex;align-items:center;justify-content:space-between;
+  width:100vw;max-width:100vw;overflow:hidden;gap:12px;
+  padding:8px clamp(16px,3vw,36px);
+  border-bottom:1px solid #000;
+
+  background-image: var(--banner-image);
+  background-size: cover;
+  background-position: center bottom; /* show the absolute bottom of the image */
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color:#fff;
+  /* Lighten image with overlay */
+  box-shadow:inset 0 0 0 2000px rgba(255,255,255,0.18);
+    }
+    header::after{
+  display:none;
+    }
+
+    .name-wrap{container-type:inline-size;position:relative;z-index:1;}
+    .name{
+  /* font-family now set globally */
+      
+      white-space:nowrap;
+      user-select:none;
+  color: #fff;
+  font-family: "Funnel Display", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
+      font-size: clamp(10px, 6vw, 48px); /* ✅ smaller max */
+      line-height:1;
+      letter-spacing:.15em;
+  /* text-shadow removed */
+    }
+    
+    .syracuse{color:#D44500;font-weight:600}
+    .name-left{justify-self:start}
+    .name-right{justify-self:end}
+
+    .tabs{display:flex;gap:10px;justify-content:center;align-items:center;position:relative;z-index:1}
+    .tabs button{
+  /* font-family now set globally */
+      appearance:none;
+      border:none;
+      outline:none;
+  background:transparent;
+  color:#e0e0e0;
+      padding:8px 14px;
+      border-radius:0;
+      cursor:pointer;
+      letter-spacing:.05em;
+      transition:background .15s ease, transform .05s ease;
+      white-space:nowrap;
+    }
+    .tabs button:hover{background:rgba(255,255,255,.15)}
+    .tabs button:active{transform:translateY(1px)}
+    .tabs button.active{background:rgba(255,255,255,.25);color:#fff}
+    .tabs button:focus-visible{box-shadow:inset 0 0 0 1px #fff}
+
+    /* PANELS: horizontal swipe */
+    .viewport{height:calc(100vh - var(--nav-h));overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scroll-behavior:smooth;display:flex;align-items:stretch}
+  .panel{scroll-snap-align:start;flex:0 0 100%;min-width:100%;max-width:100vw;padding:32px clamp(16px,4vw,64px);border-right:1px solid #000;background:#fff}
+    .panel:last-child{border-right:none}
+
+  h1,h2{margin:0 0 16px;line-height:1.2;}
+    h1{font-size:clamp(28px,5vw,44px);font-weight:500}
+    h2{font-size:clamp(22px,4vw,32px);font-weight:400}
+  p{margin:0 0 12px;}
+
+  /* Timeline */
+  .timeline{position:relative;min-height:1200px;margin:60px 0 40px}
+    .timeline .line{position:absolute;left:50%;transform:translateX(-50%);top:0;bottom:0;width:2px;background:#000}
+    .timeline .tick{position:absolute;left:calc(50% + 12px);bottom:var(--pos);font-size:12px}
+    .timeline .item{position:absolute;width:50%;bottom:var(--pos,0%);max-width:520px}
+    .timeline .item.left{left:0;padding-right:40px;text-align:right}
+    .timeline .item.right{right:0;padding-left:40px;text-align:left}
+    .timeline .marker{position:absolute;left:50%;transform:translate(-50%,50%);bottom:0;width:14px;height:14px;border:2px solid #000;background:#fff;border-radius:50%}
+    .timeline .year{font-weight:700;margin-bottom:4px}
+    .timeline .blurb{padding:0;background:#fff}
+
+    /* Projects toggle + list */
+    .project-toggle{display:flex;gap:8px;margin:16px 0 20px}
+    .project-toggle button{appearance:none;border:none;outline:none;background:#fff;padding:6px 12px;border-radius:0;cursor:pointer;font:inherit}
+    .project-toggle button.on{background:var(--grey);color:#000}
+    .projects-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:14px}
+    .projects-list li{padding:6px 0}
+    .projects-list h3{margin:0 0 4px;font-size:18px}
+    .projects-list p{margin:0;font-size:14px;color:#111}
+
+    footer{padding:24px 0 8px;font-size:12px;color:#111}
+
+    @media (max-width:900px){
+      header{
+        grid-template-columns:1fr;
+        grid-template-rows:auto auto auto;
+        gap:4px;
+        padding:8px 6px;
+        text-align:center;
+        background-position:center center;
+      }
+      header {
+        height:auto;
+        min-height:56px;
+        flex-direction:column;
+        align-items:flex-start;
+        justify-content:flex-start;
+        padding:6px 8px;
+        gap:0;
+        background-position:center 40%;
+      }
+      .name-wrap {
+        width:100%;
+        text-align:left;
+        margin-bottom:2px;
+        z-index:2;
+      }
+      .name {
+        font-size:clamp(14px,6vw,24px);
+        letter-spacing:.08em;
+        position:relative;
+        z-index:2;
+      }
+      .tabs {
+        width:100%;
+        flex-direction:column;
+        align-items:flex-start;
+        gap:2px;
+        padding:2px 0;
+        z-index:1;
+      }
+      .tabs button {
+        width:100%;
+        padding:6px 0;
+        font-size:clamp(12px,5vw,18px);
+        text-align:left;
+      }
+      .timeline .item {
+        max-width:90vw;
+        padding-left:8px;
+        padding-right:8px;
+      }
+      .projects-list h3 {
+        font-size:16px;
+      }
+      .projects-list p {
+        font-size:12px;
+      }
+      footer {
+        font-size:10px;
+        padding:12px 0 4px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <body class="funnel-display-main">
+  <header class="lexend-exa-main">
+    <div class="name-wrap name-left"><div class="name">Cameron Light</div></div>
+    <div class="tabs" role="tablist" aria-label="Site Sections">
+      <button type="button" data-index="0" class="active" role="tab" aria-selected="true">Main</button>
+      <button type="button" data-index="1" role="tab" aria-selected="false">Timeline</button>
+      <button type="button" data-index="2" role="tab" aria-selected="false">Projects</button>
+    </div>
+  </header>
+
+  <div class="viewport" id="viewport" aria-live="polite">
+    <section class="panel" id="panel-about">
+     
+      <h2 class="intro">My name is Cameron Light</h2> and I’m in my fourth and final year at <span class="syracuse">Syracuse University</span>.</h2>
+      
+      <footer>© <span id="year"></span> Cameron Light</footer>
+    </section>
+
+    <section class="panel" id="panel-timeline">
+      <h2>Timeline</h2>
+      <p>Bottom = 2018 • Top = 2025. Add items on the left/right of the line.</p>
+      <div class="timeline">
+        <div class="line"></div>
+        <div class="tick" style="--pos:0%">2018</div>
+        <div class="tick" style="--pos:14.2857%">2019</div>
+        <div class="tick" style="--pos:28.5714%">2020</div>
+        <div class="tick" style="--pos:42.8571%">2021</div>
+        <div class="tick" style="--pos:57.1429%">2022</div>
+        <div class="tick" style="--pos:71.4286%">2023</div>
+        <div class="tick" style="--pos:85.7143%">2024</div>
+        <div class="tick" style="--pos:100%">2025</div>
+
+        <article class="item left" style="--pos:0%">
+          <div class="marker"></div>
+          <div class="year">2018</div>
+          <div class="blurb">High School graduation</div>
+        </article>
+        <article class="item right" style="--pos:42.8571%">
+          <div class="marker"></div>
+          <div class="year">2021</div>
+          <div class="blurb">Internship / major step</div>
+        </article>
+        <article class="item left" style="--pos:100%">
+          <div class="marker"></div>
+          <div class="year">2025</div>
+          <div class="blurb">Present role</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel" id="panel-projects">
+      <h2>Projects</h2>
+      <div class="project-toggle" role="tablist" aria-label="Project Category">
+        <button type="button" data-filter="personal" class="on" aria-pressed="true">Personal</button>
+        <button type="button" data-filter="academic" aria-pressed="false">Academic</button>
+      </div>
+      <ul class="projects-list">
+        <li data-category="personal">
+          <h3>Personal Project One</h3>
+          <p>Short one-liner about what it is.</p>
+        </li>
+        <li data-category="personal">
+          <h3>Personal Project Two</h3>
+          <p>Stack, role, or outcome.</p>
+        </li>
+        <li data-category="academic">
+          <h3>Academic Project One</h3>
+          <p>Course, lab, or research blurb.</p>
+        </li>
+        <li data-category="academic">
+          <h3>Academic Project Two</h3>
+          <p>Methods, results, or impact.</p>
+        </li>
+      </ul>
+    </section>
+  </div>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    const viewport = document.getElementById('viewport');
+    const tabs = document.querySelectorAll('.tabs button');
+    const tabRoutes = ['about', 'timeline', 'projects'];
+
+    function goTo(index, pushState = true){
+      const w = viewport.clientWidth;
+      viewport.scrollTo({left:w*index,behavior:'smooth'});
+      tabs.forEach((b,i)=>{
+        const on=i===index;
+        b.classList.toggle('active',on);
+        b.setAttribute('aria-selected',on?'true':'false');
+      });
+      if(pushState){
+        history.pushState({tab:index}, '', `#${tabRoutes[index]}`);
+      }
+    }
+
+    tabs.forEach(btn=>btn.addEventListener('click',()=>{
+      goTo(parseInt(btn.dataset.index));
+    }));
+
+    let ticking=false;
+    viewport.addEventListener('scroll',()=>{
+      if(ticking) return;
+      ticking=true;
+      requestAnimationFrame(()=>{
+        const i=Math.round(viewport.scrollLeft/viewport.clientWidth);
+        tabs.forEach((b,idx)=>{
+          const on=idx===i;
+          b.classList.toggle('active',on);
+          b.setAttribute('aria-selected',on?'true':'false');
+        });
+        history.replaceState({tab:i}, '', `#${tabRoutes[i]}`);
+        ticking=false;
+      });
+    });
+
+    window.addEventListener('keydown',(e)=>{
+      if(e.key==='ArrowRight'||e.key==='PageDown'){
+        e.preventDefault();
+        const idx=[...tabs].findIndex(b=>b.classList.contains('active'));
+        goTo(Math.min(2,idx+1));
+      }
+      if(e.key==='ArrowLeft'||e.key==='PageUp'){
+        e.preventDefault();
+        const idx=[...tabs].findIndex(b=>b.classList.contains('active'));
+        goTo(Math.max(0,idx-1));
+      }
+    });
+
+    window.addEventListener('popstate', (e) => {
+      let idx = 0;
+      if(location.hash){
+        const hash = location.hash.replace('#','');
+        idx = tabRoutes.indexOf(hash);
+        if(idx === -1) idx = 0;
+      }
+      goTo(idx, false);
+    });
+
+    // On page load, go to tab based on hash
+    (() => {
+      let idx = 0;
+      if(location.hash){
+        const hash = location.hash.replace('#','');
+        idx = tabRoutes.indexOf(hash);
+        if(idx === -1) idx = 0;
+      }
+      goTo(idx, false);
+    })();
+
+    const projButtons=document.querySelectorAll('.project-toggle [data-filter]');
+    const projItems=document.querySelectorAll('.projects-list [data-category]');
+    function applyFilter(kind){
+      projItems.forEach(li=>{
+        li.style.display=(li.getAttribute('data-category')===kind)?'':'none';
+      });
+    }
+    projButtons.forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        projButtons.forEach(b=>{
+          b.classList.remove('on');
+          b.setAttribute('aria-pressed','false');
+        });
+        btn.classList.add('on');
+        btn.setAttribute('aria-pressed','true');
+        applyFilter(btn.getAttribute('data-filter'));
+      });
+    });
+    applyFilter('personal');
+  </script>
+</body>
+</html>

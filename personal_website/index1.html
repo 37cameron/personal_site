@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cameron Light — Personal Site</title>
+
+  <!-- Google Font: Funnel Display -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300..800&display=swap" rel="stylesheet">
+
+  <style>
+    /* Global font */
+    body, * {
+      font-family: "Funnel Display", sans-serif !important;
+      font-optical-sizing: auto;
+      font-weight: 300 !important;
+      font-style: normal;
+      box-sizing: border-box;
+    }
+    .funnel-display-main {
+      font-family: "Funnel Display", sans-serif;
+      font-weight: 300;
+      font-style: normal;
+    }
+
+    :root {
+      --bg:#fff; --fg:#000; --nav-h:72px; --kelly:#4CBB17; --grey:#e6e6e6;
+      --banner-image: url('nature1.jpg');
+    }
+
+    html, body { height:100%; width:100vw; max-width:100vw; overflow-x:hidden; }
+    body { margin:0; background:var(--bg); color:var(--fg); }
+    a { color:inherit; text-decoration:none; }
+
+    /* Header / Banner */
+    header{
+      position:sticky; top:0; z-index:10; height:72px;
+      display:flex; align-items:center; justify-content:center;
+  width:100vw; max-width:100vw; overflow:hidden; gap:12px;
+  padding:8px clamp(16px,3vw,36px);
+  border-bottom: none;
+
+      background-image: var(--banner-image);
+      background-size: cover;
+      background-position: center bottom;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      color:#fff;
+      box-shadow:inset 0 0 0 2000px rgba(255,255,255,0.18);
+    }
+  .name-wrap{container-type:inline-size; position:relative; z-index:1; width:100%; text-align:center}
+    .name{
+      color:#fff; white-space:nowrap; user-select:none;
+      font-size: clamp(10px, 6vw, 48px);
+      line-height:1; letter-spacing:.15em;
+    }
+    .syracuse{color:#D44500; font-weight:600}
+
+  .tabs{display:flex; gap:10px; justify-content:center; align-items:center; position:relative; z-index:1}
+    .tabs button{
+      appearance:none; border:none; outline:none; background:transparent; color:#e0e0e0;
+      padding:8px 14px; border-radius:0; cursor:pointer; letter-spacing:.05em;
+      transition:background .15s ease, transform .05s ease; white-space:nowrap;
+    }
+    .tabs button:hover{background:rgba(255,255,255,.15)}
+    .tabs button:active{transform:translateY(1px)}
+    .tabs button.active{background:rgba(255,255,255,.25); color:#fff}
+    .tabs button:focus-visible{box-shadow:inset 0 0 0 1px #fff}
+
+    /* Panels (horizontal) */
+    .viewport{
+      height:calc(100vh - var(--nav-h));
+      overflow-x:auto; overflow-y:hidden;
+      scroll-snap-type:x mandatory; scroll-behavior:smooth;
+      display:flex; align-items:stretch;
+    }
+    .panel{
+      scroll-snap-align:start; flex:0 0 100%;
+      min-width:100%; max-width:100vw;
+      padding:32px clamp(16px,4vw,64px);
+      background:#fff;
+    }
+    .panel:last-child{border-right:none}
+    h1,h2{margin:0 0 16px; line-height:1.2;}
+    h1{font-size:clamp(28px,5vw,44px); font-weight:500}
+    h2{font-size:clamp(22px,4vw,32px); font-weight:400}
+    p{margin:0 0 12px;}
+
+    /* Projects */
+    .project-toggle{display:flex; gap:8px; margin:16px 0 20px}
+    /* Make project filter buttons visually match the main menu tab buttons */
+    .project-toggle button{
+      appearance:none; border:none; outline:none; background:transparent; padding:10px 16px; border-radius:0; cursor:pointer; font:inherit; color:#9CA3AF;
+    }
+    .project-toggle button:hover{ background: rgba(0,0,0,0.04); }
+    .project-toggle button.on{ background:#f3f4f6; color:#111 }
+    .projects-list{list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:14px}
+    .projects-list li{padding:6px 0}
+    .projects-list h3{margin:0 0 4px; font-size:18px}
+    .projects-list p{margin:0; font-size:14px; color:#111}
+
+  /* Project link style: light blue, underlined */
+  .projects-list .project-link { color: #60A5FA; text-decoration: underline; }
+  .projects-list .project-link:hover { color: #3B82F6; }
+
+  /* About inner center block: center container but left-align text */
+  .about-inner{ max-width:900px; margin: 24px auto; text-align:left; }
+
+  /* Make text on the Main/About panel slightly smaller for better balance */
+  #panel-about .about-inner { font-size: 14px; }
+  #panel-about .about-inner h2 { font-size: clamp(18px,4vw,22px); }
+
+  /* Tabs relocated into panel: center above content */
+  .panel .tabs{ display:flex; justify-content:center; gap:16px; margin: 8px auto 16px; overflow:auto; -webkit-overflow-scrolling:touch }
+  .panel .tabs button{ padding:10px 16px; background:transparent; border:none; color:#9CA3AF; cursor:pointer; border-radius:0; font-size:16px }
+  /* Remove browser focus/active rings so buttons don't show a blue border when clicked.
+    Keep a11y by using aria-selected and other attributes; this only removes the browser visual ring. */
+  .panel .tabs button:focus,
+  .panel .tabs button:focus-visible,
+  .panel .tabs button:active,
+  .tabs button:active,
+  button:focus,
+  button:active { outline: none !important; box-shadow: none !important; }
+  button::-moz-focus-inner { border: 0; }
+  /* Prevent the tap highlight on mobile */
+  html, body, button { -webkit-tap-highlight-color: transparent; }
+  /* active appears as a light grey pill, not underlined */
+  .panel .tabs button.active{ color:#111; background:#f3f4f6; text-decoration:none }
+
+  /* inner panel wrapper to center content like About */
+  .panel-inner{ max-width:900px; margin: 24px auto; text-align:left }
+
+    footer{padding:24px 0 8px; font-size:12px; color:#111}
+
+    /* Vertical Timeline (namespaced: vtl-) */
+  #panel-timeline .vtl-root { position: relative; height: 1800px; max-width: 64rem; margin: 60px auto 40px; }
+    #panel-timeline .vtl-backbone {
+      position: absolute; left: 50%; transform: translateX(-50%);
+      top: 0; bottom: 0; width: 4px;
+      background: linear-gradient(to top, #000 0%, #000 96%, #fff 100%);
+    }
+    #panel-timeline .vtl-year { position: absolute; left: 50%; transform: translateX(-50%); text-align: center; }
+    #panel-timeline .vtl-year-gap {
+      position: absolute; left: 50%; top: 0; transform: translate(-50%, -50%);
+      width: 80px; height: 18px; background: #fff;
+    }
+    #panel-timeline .vtl-year-label { position: relative; transform: translateY(-50%); font-size: 12px; color: #333; }
+
+  #panel-timeline .vtl-seg { position: absolute; width: 10px; outline: none; border: none; z-index: 10; }
+    #panel-timeline .vtl-seg-bar { position: absolute; inset: 0; opacity: .9; }
+    #panel-timeline .vtl-bubble { position: absolute; opacity: 0; transition: opacity .18s ease; pointer-events: none; }
+  #panel-timeline .vtl-bubble { box-shadow: none; z-index: 9999; }
+    #panel-timeline .vtl-bubble.show { opacity: 1; }
+  #panel-timeline .vtl-bubble.always { opacity: 1; pointer-events: auto; z-index: 9999; }
+    #panel-timeline .vtl-bubble-chip { font-size: 10px; background: #fff; border: 1px solid #e5e7eb; border-radius: 0; padding: 4px 8px; box-shadow: none; display: inline-block; vertical-align: middle; z-index: 9999; }
+  #panel-timeline .vtl-bubble-dot { display:none; }
+
+  /* Always-visible labels for right-side segments */
+  #panel-timeline .vtl-bubble.always { display:flex; align-items:center; gap:8px; box-shadow:none; z-index: 9998; }
+  #panel-timeline .vtl-bubble.always .vtl-bubble-chip { background: transparent; border: none; padding: 0; font-size: 14px; box-shadow:none; }
+
+    #panel-timeline .vtl-point { position: absolute; }
+    #panel-timeline .vtl-point button { position: relative; width: 12px; height: 12px; border-radius: 9999px; border: none; background: #fff; box-shadow: none; }
+  #panel-timeline .vtl-point .vtl-point-pop { margin-top: 6px; max-width: 220px; font-size: 10px; line-height: 1.2; background: #fff; border: 1px solid #d1d5db; border-radius: 0; padding: 6px 8px; box-shadow: none; z-index: 10000; position: relative; }
+
+    /* Responsive tweaks */
+    @media (max-width:900px){
+      header{
+        grid-template-columns:1fr; grid-template-rows:auto auto auto;
+        gap:4px; padding:8px 6px; text-align:center; background-position:center center;
+        height:auto; min-height:56px; flex-direction:column; align-items:center; justify-content:center;
+        padding:6px 8px; gap:0; background-position:center 40%;
+      }
+      /* Keep the site name centered on small screens and slightly reduce the size to fit */
+      .name-wrap { width:100%; text-align:center; margin-bottom:6px; z-index:2; }
+      .name { font-size:clamp(12px,5.5vw,22px); letter-spacing:.08em; position:relative; z-index:2; }
+  /* Keep tabs horizontal on small screens; allow horizontal scrolling when needed */
+  .tabs { width:100%; flex-direction:row; align-items:center; gap:8px; padding:6px 4px; z-index:1; overflow-x:auto; -webkit-overflow-scrolling:touch; white-space:nowrap; justify-content:center; }
+  .tabs button { width:auto; padding:8px 12px; font-size:clamp(12px,4.5vw,16px); text-align:center; white-space:nowrap; }
+      .projects-list h3 { font-size:16px; }
+      .projects-list p { font-size:12px; }
+      footer { font-size:10px; padding:12px 0 4px; }
+      #panel-timeline .vtl-root { height:1600px; }
+    }
+    /* Allow the Timeline panel to scroll vertically */
+#panel-timeline {
+  height: calc(100vh - var(--nav-h));
+  overflow-y: auto;                 /* enable vertical scroll inside the panel */
+  overscroll-behavior: contain;     /* nicer scroll on desktop/mobile */
+  -webkit-overflow-scrolling: touch;/* smooth on iOS */
+}
+
+#panel-timeline .vtl-root {
+  padding-bottom: 140px;            /* keeps bottom items from feeling clipped */
+}
+
+  /* Photo modal / carousel */
+  #photo-modal{ position:fixed; inset:0; background:rgba(0,0,0,0.75); display:none; align-items:center; justify-content:center; z-index:20000; }
+  #photo-modal.show{ display:flex; }
+  /* Ensure the photo modal shows the entire image on both desktop and mobile. Using contain (object-fit) and tight viewport bounds.
+    pm-content constrains image size; pm-img scales to fit while preserving aspect ratio for both vertical and horizontal photos. */
+  #photo-modal .pm-content{ position:relative; max-width:1100px; width: min(92vw, 1100px); max-height:88vh; display:flex; align-items:center; justify-content:center; padding:12px; box-sizing:border-box; }
+  #photo-modal .pm-img{ max-width:100%; max-height:88vh; width:auto; height:auto; object-fit:contain; display:block; border:4px solid rgba(255,255,255,0.06); box-shadow:0 8px 30px rgba(0,0,0,0.6); background:#000 }
+  #photo-modal .pm-close, #photo-modal .pm-prev, #photo-modal .pm-next{ position:absolute; background:rgba(255,255,255,0.06); color:#fff; border:none; padding:10px 12px; cursor:pointer; border-radius:4px }
+  #photo-modal .pm-close{ top:12px; right:12px }
+  #photo-modal .pm-prev{ left:12px; top:50%; transform:translateY(-50%) }
+  #photo-modal .pm-next{ right:12px; top:50%; transform:translateY(-50%) }
+  #photo-modal .pm-caption{ position:absolute; bottom:18px; left:50%; transform:translateX(-50%); color:#fff; font-size:14px; background:rgba(0,0,0,0.35); padding:6px 10px; border-radius:6px; text-align:center; line-height:1.2 }
+
+  /* On small screens, reduce image footprint and ensure portrait photos fit fully */
+  @media (max-width:600px){
+    #photo-modal .pm-content{ width:94vw; max-height:92vh; padding:8px }
+    #photo-modal .pm-img{ max-height:82vh }
+    #photo-modal .pm-prev, #photo-modal .pm-next{ padding:8px }
+    #photo-modal .pm-caption{ font-size:13px; bottom:12px }
+  }
+
+  /* Thumbnail styles */
+  .photo-thumbs img{ height:80px; width:auto; object-fit:cover; cursor:pointer; border:2px solid rgba(255,255,255,0.06); box-shadow:0 2px 6px rgba(0,0,0,0.2) }
+  .photo-thumbs img:focus{ outline:none; box-shadow:0 0 0 2px rgba(99,102,241,0.6) }
+  .photo-thumbs img:hover{ transform:scale(1.02) }
+
+  </style>
+</head>
+
+<body class="funnel-display-main">
+  <header class="lexend-exa-main">
+    <div class="name-wrap name-left"><div class="name">Cameron Light</div></div>
+  </header>
+
+  <div class="viewport" id="viewport" aria-live="polite">
+    <!-- About -->
+    <section class="panel" id="panel-about">
+      <div class="tabs" role="tablist" aria-label="Site Sections">
+          <button type="button" data-index="0" role="tab" aria-selected="false">Main</button>
+          <button type="button" data-index="1" role="tab" aria-selected="false">Timeline</button>
+          <button type="button" data-index="2" role="tab" aria-selected="false">Projects</button>
+        </div>
+
+      <div class="about-inner">
+        <h2 class="intro">My name is Cameron Light</h2>
+        <h2>and I’m in my fourth and final year at <span class="syracuse">Syracuse University</span>.</h2>
+        <footer>© <span id="year"></span> Cameron Light</footer>
+      </div>
+    </section>
+
+    <!-- Timeline -->
+    <section class="panel" id="panel-timeline">
+      <div class="tabs" role="tablist" aria-label="Site Sections">
+        <button type="button" data-index="0" role="tab" aria-selected="false">Main</button>
+        <button type="button" data-index="1" role="tab" aria-selected="false">Timeline</button>
+        <button type="button" data-index="2" role="tab" aria-selected="false">Projects</button>
+      </div>
+      <div class="vtl-root" id="vtl-root">
+        <div class="vtl-backbone" aria-hidden></div>
+        <!-- years, segments, points injected by JS -->
+      </div>
+    </section>
+
+    <!-- Projects -->
+    <section class="panel" id="panel-projects">
+      <div class="tabs" role="tablist" aria-label="Site Sections">
+        <button type="button" data-index="0" role="tab" aria-selected="false">Main</button>
+        <button type="button" data-index="1" role="tab" aria-selected="false">Timeline</button>
+        <button type="button" data-index="2" role="tab" aria-selected="false">Projects</button>
+      </div>
+      <div class="panel-inner">
+        <h2>Projects</h2>
+        <div class="project-toggle" role="tablist" aria-label="Project Category">
+        <button type="button" data-filter="personal" aria-pressed="false">Personal</button>
+        <button type="button" data-filter="academic" class="on" aria-pressed="true">Academic</button>
+      </div>
+      <ul class="projects-list">
+        <li data-category="personal">
+          <h3><a class="project-link" href="https://cameronlight.substack.com/" target="_blank" rel="noopener noreferrer">Writing</a></h3>
+        </li>
+        <li data-category="academic">
+          <h3><a class="project-link" href="#" id="wen-toggle">Fellowship with Dr. Wen</a></h3>
+          <p style="margin:6px 0 8px; color:#6b7280; font-size:13px">Jan 2025 – Present</p>
+          <div id="wen-details" style="display:none; margin-top:6px; color:#111;">
+
+            <p>As a SOURCE-funded fellow working under Dr. Wen, I’m helping develop a system for environmental data transfer, storage, and dissemination. The work bridges environmental science, coding, and community collaboration. More specifically:</p>
+
+            <p>&nbsp;</p>
+
+            <p>Programming in Python and R to automate sensor data processing, formatting, and visualization</p>
+
+            <p>&nbsp;</p>
+
+            <p>Working with CTD (Conductivity, Temperature, Depth) sensors* and other field equipment for real-time environmental monitoring</p>
+
+            <p>&nbsp;</p>
+
+            <p>Collaborating with local community partners</p>
+
+            <p>&nbsp;</p>
+
+            <p>Supporting hardware integration, including sensor setup, calibration, and microcontroller data logging</p>
+
+            <p>&nbsp;</p>
+
+            <p>Through this role, I've gotten to strengthen my skills in field instrumentation, open-source development, and applied data analytics.</p>
+
+            <p style="margin-top:8px; font-size:13px; color:#6b7280">*EnviroDIY MayFly Logger, HOBO TidbiT MX</p>
+
+            <!-- Thumbnails: clicking a thumbnail opens the fullscreen carousel -->
+            <div class="photo-thumbs" id="wen-thumbs" style="margin-top:10px; display:flex; gap:8px; overflow-x:auto; padding-bottom:6px;">
+              <img src="KIMG2712.JPG" alt="photo 1" data-idx="0">
+              <img src="KIMG2718.JPG" alt="photo 2" data-idx="1">
+              <img src="KIMG2719.JPG" alt="photo 3" data-idx="2">
+              <img src="KIMG2730.JPG" alt="photo 4" data-idx="3">
+            </div>
+          </div>
+        </li>
+        <li data-category="academic">
+          <h3><a class="project-link" href="#" onclick="event.preventDefault();" aria-disabled="true">Data Vizualisation Final</a></h3>
+          <p style="margin:6px 0 8px; color:#6b7280; font-size:13px">Spring 2024</p>
+          <p>Methods, results, or impact.</p>
+        </li>
+      </ul>
+      </div>
+    </section>
+  </div>
+
+  <!-- Main site script: tabs, routing, filters -->
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+  const viewport = document.getElementById('viewport');
+  // target the tabs inside the panels (we moved them into the About panel)
+  const tabs = document.querySelectorAll('.panel .tabs button');
+    const tabRoutes = ['about', 'timeline', 'projects'];
+
+    // Button-driven navigation: show/hide panels and update tabs/history
+    const panels = Array.from(document.querySelectorAll('.panel'));
+    function goTo(index, pushState = true){
+      panels.forEach((p, i) => {
+        p.style.display = (i === index) ? 'block' : 'none';
+      });
+      setActiveTabs(index);
+      if(pushState){
+        history.pushState({tab:index}, '', `#${tabRoutes[index]}`);
+      } else {
+        history.replaceState({tab:index}, '', `#${tabRoutes[index]}`);
+      }
+    }
+
+    function setActiveTabs(index){
+      const allButtons = document.querySelectorAll('.panel .tabs button');
+      allButtons.forEach(btn => {
+        const btnIndex = parseInt(btn.dataset.index);
+        const on = btnIndex === index;
+        btn.classList.toggle('active', on);
+        btn.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+      centerActiveTabButton();
+    }
+
+    function centerActiveTabButton(){
+      const container = panels[indexFromHash()]?.querySelector('.tabs') || document.querySelector('.panel .tabs');
+      const active = container?.querySelector('button.active') || container?.querySelector('button');
+      if(active && typeof active.scrollIntoView === 'function'){
+        active.scrollIntoView({inline:'center', block:'nearest', behavior:'smooth'});
+      }
+    }
+
+    function indexFromHash(){
+      if(location.hash){
+        const h = location.hash.replace('#','');
+        const idx = tabRoutes.indexOf(h);
+        return idx === -1 ? 0 : idx;
+      }
+      return 0;
+    }
+
+    // wire up tab buttons — buttons trigger navigation only
+    document.querySelectorAll('.panel .tabs button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const idx = parseInt(btn.dataset.index);
+        goTo(idx);
+      });
+    });
+
+    // keyboard navigation uses goTo
+    window.addEventListener('keydown',(e)=>{
+      const current = panels.findIndex(p => p.style.display !== 'none');
+      if(e.key==='ArrowRight'||e.key==='PageDown'){
+        e.preventDefault();
+        goTo(Math.min(panels.length-1, current+1));
+      }
+      if(e.key==='ArrowLeft'||e.key==='PageUp'){
+        e.preventDefault();
+        goTo(Math.max(0, current-1));
+      }
+    });
+
+    // popstate handling and initial load
+    window.addEventListener('popstate', (event) => {
+      const idx = (event.state && event.state.tab !== undefined) ? event.state.tab : indexFromHash();
+      goTo(idx, false);
+    });
+
+    // initial show based on hash
+    goTo(indexFromHash(), false);
+
+    // Projects filter
+    const projButtons=document.querySelectorAll('.project-toggle [data-filter]');
+    const projItems=document.querySelectorAll('.projects-list [data-category]');
+    function applyFilter(kind){
+      projItems.forEach(li=>{
+        li.style.display=(li.getAttribute('data-category')===kind)?'':'none';
+      });
+    }
+    projButtons.forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        projButtons.forEach(b=>{
+          b.classList.remove('on');
+          b.setAttribute('aria-pressed','false');
+        });
+        btn.classList.add('on');
+        btn.setAttribute('aria-pressed','true');
+        applyFilter(btn.getAttribute('data-filter'));
+      });
+    });
+    applyFilter('academic');
+  </script>
+
+  <!-- Photo modal + fellowship toggle script -->
+  <script>
+    // Toggle fellowship details
+    const wenToggle = document.getElementById('wen-toggle');
+    const wenDetails = document.getElementById('wen-details');
+    if(wenToggle && wenDetails){
+      wenToggle.addEventListener('click', (e)=>{ e.preventDefault(); wenDetails.style.display = (wenDetails.style.display === 'none') ? 'block' : 'none'; });
+    }
+
+    // Photo modal markup (append to body)
+    const photoModal = document.createElement('div');
+    photoModal.id = 'photo-modal';
+    photoModal.innerHTML = `
+      <div class="pm-content">
+        <button class="pm-close" aria-label="Close">✕</button>
+        <button class="pm-prev" aria-label="Previous">◀</button>
+        <img class="pm-img" src="" alt="Photo">
+        <button class="pm-next" aria-label="Next">▶</button>
+        <div class="pm-caption"></div>
+      </div>`;
+    document.body.appendChild(photoModal);
+
+    const pmImg = photoModal.querySelector('.pm-img');
+    const pmClose = photoModal.querySelector('.pm-close');
+    const pmPrev = photoModal.querySelector('.pm-prev');
+    const pmNext = photoModal.querySelector('.pm-next');
+    const pmCaption = photoModal.querySelector('.pm-caption');
+
+    // Local images in the workspace (hard-coded from listing)
+    const photos = [
+      'KIMG2712.JPG',
+      'KIMG2718.JPG',
+      'KIMG2719.JPG',
+      'KIMG2730.JPG'
+    ];
+    let photoIndex = 0;
+
+    function showPhoto(idx){
+      if(idx < 0) idx = photos.length - 1;
+      if(idx >= photos.length) idx = 0;
+      photoIndex = idx;
+      pmImg.src = photos[photoIndex];
+      // Fixed description for all photos plus index
+      pmCaption.innerHTML = `MayFly Logger installation at sluice. 09/11/2025<br>${photoIndex+1} / ${photos.length}`;
+    }
+
+    function openPhotoModal(startIdx=0){
+      showPhoto(startIdx);
+      photoModal.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+    function closePhotoModal(){
+      photoModal.classList.remove('show');
+      document.body.style.overflow = '';
+    }
+
+    pmClose.addEventListener('click', closePhotoModal);
+    pmPrev.addEventListener('click', ()=> showPhoto(photoIndex-1));
+    pmNext.addEventListener('click', ()=> showPhoto(photoIndex+1));
+
+    // keyboard navigation while modal open
+    window.addEventListener('keydown',(e)=>{
+      if(!photoModal.classList.contains('show')) return;
+      if(e.key === 'ArrowLeft') showPhoto(photoIndex-1);
+      if(e.key === 'ArrowRight') showPhoto(photoIndex+1);
+      if(e.key === 'Escape') closePhotoModal();
+    });
+
+    // Open photos link
+    // Wire thumbnails (if present) to open the modal at the correct index
+    const wenThumbs = document.getElementById('wen-thumbs');
+    if(wenThumbs){
+      wenThumbs.querySelectorAll('img[data-idx]').forEach(img=>{
+        img.addEventListener('click', (e)=>{ const idx = parseInt(img.dataset.idx||'0'); openPhotoModal(idx); });
+      });
+    }
+
+    // Close when clicking outside content
+    photoModal.addEventListener('click', (e)=>{
+      if(e.target === photoModal) closePhotoModal();
+    });
+  </script>
+
+  <!-- Timeline module: renders years, segments, and clickable points -->
+  <script type="module">
+    const startDate = new Date("2004-01-01T00:00:00");
+    const endDate = new Date();
+    const breakDate = new Date("2016-01-01T00:00:00");
+    const PIG = 44; // 1 pig = 44px
+
+    const years = [];
+    for (let y = 2004; y <= endDate.getFullYear(); y++) years.push(y);
+
+    const segments = [
+      { label: "Brookwood School", start: "2008-01-01", end: "2018-06-30T23:59:59", color: "#064e3b", leftOffsetPx:  PIG },
+  { label: "Manchester-Essex<br>Regional Highschool", start: "2018-09-01", end: "2022-05-31T23:59:59", color: "#4CBB17", leftOffsetPx:  PIG },
+      { label: "Syracuse University", start: "2022-09-01", end:  endDate, color: "#D44500", leftOffsetPx:  PIG },
+
+      { label: "Fellowship under Dr. Wen", start: "2025-01-01", end: endDate, color: "#000000", leftOffsetPx: -2*PIG, borderColor: "#D44500", adjustAboveYear: 2025 },
+  { label: "University of<br>Strasbourg", start: "2024-09-01", end: "2024-12-31T23:59:59", color: "#800000", leftOffsetPx: 1.5*PIG, labelOffsetPx: PIG },
+      { label: "Buddhist Meditation Association", start: "2023-09-01", end: endDate, color: "#000000", leftOffsetPx: -2.5*PIG, borderColor: "#D44500" },
+      { label: "Kappa Theta Pi Professional Fraternity", start: "2024-01-01", end: "2025-08-31T23:59:59", color: "#696969", leftOffsetPx: -3*PIG, borderColor: "#D44500" },
+
+      { label: "Food Service", start: "2024-02-01", end: "2024-05-31T23:59:59", color: "#D3D3D3", leftOffsetPx: -1*PIG },
+      { label: "Food Service", start: "2024-09-01", end: endDate, color: "#D3D3D3", leftOffsetPx: -1*PIG },
+      { label: "Surfing Instructor", start: "2024-06-01", end: "2024-08-31T23:59:59", color: "#D3D3D3", leftOffsetPx: -1*PIG },
+      { label: "ProTurf Landscaper", start: "2022-06-01", end: "2023-08-31T23:59:59", color: "#D3D3D3", leftOffsetPx: -1*PIG },
+      { label: "Food Service", start: "2022-04-01", end: "2023-08-31T23:59:59", color: "#D3D3D3", leftOffsetPx: -1*PIG },
+      { label: "Crosby's Marketplace", start: "2019-05-01", end: "2022-10-31T23:59:59", color: "#D3D3D3", leftOffsetPx: -1*PIG },
+      { label: "Food Service", start: "2018-06-01", end: "2018-10-31T23:59:59", color: "#D3D3D3", leftOffsetPx: -1*PIG },
+
+      { label: "Health Operations Students of America", start: "2020-09-01", end: "2022-05-31T23:59:59", color: "#000000", leftOffsetPx: -2*PIG, borderColor: "#4CBB17" },
+      { label: "Neuroscience Club", start: "2020-09-01", end: "2022-05-31T23:59:59", color: "#000000", leftOffsetPx: -2.5*PIG, borderColor: "#4CBB17" },
+    ];
+
+    const points = [
+      { label: "New England Patriots beat the Atlanta Falcons in Super Bowl LI after 28-3 deficit", date: "2017-02-07", leftOffsetPx: -5*PIG, color: "#111" },
+      { label: "I speak my first word, Innovation", date: "2005-08-01", leftOffsetPx: -5*PIG, color: "#111" },
+    ];
+
+    const toDate = (v) => v instanceof Date ? v : new Date(v);
+
+    function pctFromDate(d) {
+      const t0 = startDate.getTime();
+      const tBreak = breakDate.getTime();
+      const t1 = endDate.getTime();
+      const t = Math.min(Math.max(toDate(d).getTime(), t0), t1);
+
+      // 2004–2015 compressed evenly into 20% of the column height, 2016–today over the rest
+      const earlyPortion = 20;
+      const latePortion = 100 - earlyPortion;
+
+      if (t >= tBreak) {
+        const fracLate = (t - tBreak) / (t1 - tBreak);
+        return earlyPortion + fracLate * latePortion;
+      }
+      const totalYears = 2016 - 2004;
+      const year = new Date(t).getFullYear();
+      const idx = Math.max(0, Math.min(year - 2004, totalYears));
+      return (idx / totalYears) * earlyPortion;
+    }
+
+    function renderTimeline(root) {
+      // Years (with central gap)
+      years.forEach((y) => {
+        const yDiv = document.createElement('div');
+        yDiv.className = 'vtl-year';
+        yDiv.style.bottom = pctFromDate(new Date(`${y}-01-01`)) + '%';
+        const gap = document.createElement('div'); gap.className = 'vtl-year-gap';
+        const label = document.createElement('div'); label.className = 'vtl-year-label'; label.textContent = y;
+        yDiv.appendChild(gap); yDiv.appendChild(label); root.appendChild(yDiv);
+      });
+
+      // Segments (bars)
+      segments.forEach((s) => {
+        const startPct = pctFromDate(s.start);
+        const endPct = pctFromDate(s.end);
+        let bottomPct = startPct;
+
+        if (s.adjustAboveYear) {
+          const yPct = pctFromDate(new Date(`${s.adjustAboveYear}-01-01`));
+          if (bottomPct <= yPct) bottomPct = yPct + 1;
+        }
+        const heightPct = Math.max(0, endPct - bottomPct);
+
+        const wrap = document.createElement('button');
+        wrap.className = 'vtl-seg';
+        wrap.style.left = (s.leftOffsetPx >= 0)
+          ? `calc(50% - ${s.leftOffsetPx}px)`
+          : `calc(50% + ${Math.abs(s.leftOffsetPx)}px)`;
+        wrap.style.bottom = bottomPct + '%';
+        wrap.style.height = heightPct + '%';
+  if (s.borderColor) wrap.style.border = `2px solid ${s.borderColor}`;
+  // Remove native title to avoid browser tooltip; keep aria-label for accessibility
+  wrap.removeAttribute('title');
+  wrap.setAttribute('aria-label', s.label.replace(/<br>/g, ' '));
+
+        const bar = document.createElement('div');
+        bar.className = 'vtl-seg-bar';
+        bar.style.backgroundColor = s.color;
+        wrap.appendChild(bar);
+
+        const bubble = document.createElement('div');
+        bubble.className = 'vtl-bubble';
+        bubble.style.bottom = `calc(${(endPct + bottomPct)/2}% - 6px)`;
+        const labelBase = (typeof s.labelOffsetPx === 'number') ? s.labelOffsetPx : (s.leftOffsetPx + 12);
+        bubble.style.left = (labelBase >= 0)
+          ? `calc(50% - ${labelBase}px)`
+          : `calc(50% + ${Math.abs(labelBase)}px)`;
+        const dot = document.createElement('span'); dot.className = 'vtl-bubble-dot'; dot.style.backgroundColor = s.color; if (s.borderColor) dot.style.border = `2px solid ${s.borderColor}`;
+        const chip = document.createElement('span'); chip.className = 'vtl-bubble-chip';
+        // set innerHTML to allow manual <br> in labels (e.g. Manchester Essex)
+        chip.innerHTML = s.label;
+        // Make right-side segment labels always visible and styled to match the segment
+        if (s.leftOffsetPx > 0) {
+          bubble.classList.add('always','show');
+          // move bubble farther left of the segment for clearer separation
+          const offsetForLabel = (typeof s.labelOffsetPx === 'number') ? s.labelOffsetPx : s.leftOffsetPx;
+          bubble.style.left = `calc(50% - ${offsetForLabel + 170}px)`;
+          // style chip to match segment color and inherit page font
+          chip.style.color = s.color;
+          chip.style.background = 'transparent';
+          chip.style.border = 'none';
+          chip.style.fontFamily = 'inherit';
+          chip.style.fontSize = '14px';
+          chip.style.fontWeight = '400';
+          chip.style.padding = '0 6px';
+        }
+        bubble.appendChild(dot); bubble.appendChild(chip);
+
+        wrap.addEventListener('mouseenter', ()=> bubble.classList.add('show'));
+        wrap.addEventListener('mouseleave', ()=> bubble.classList.remove('show'));
+        wrap.addEventListener('focus', ()=> bubble.classList.add('show'));
+        wrap.addEventListener('blur',  ()=> bubble.classList.remove('show'));
+
+        root.appendChild(wrap); root.appendChild(bubble);
+      });
+
+      // Points (click-to-reveal)
+      let openIdx = null;
+      points.forEach((p, idx) => {
+        const holder = document.createElement('div');
+        holder.className = 'vtl-point';
+        holder.style.bottom = pctFromDate(p.date) + '%';
+        holder.style.left = (p.leftOffsetPx >= 0)
+          ? `calc(50% - ${p.leftOffsetPx}px)`
+          : `calc(50% + ${Math.abs(p.leftOffsetPx)}px)`;
+
+        const btn = document.createElement('button');
+        btn.setAttribute('aria-label', 'Show event');
+        btn.addEventListener('click', () => {
+          const already = openIdx === idx;
+          document.querySelectorAll('#panel-timeline .vtl-point-pop').forEach(el => el.remove());
+          openIdx = already ? null : idx;
+          if (!already) {
+            const pop = document.createElement('div');
+            pop.className = 'vtl-point-pop';
+            pop.textContent = p.label;
+            holder.appendChild(pop);
+          }
+        });
+
+        holder.appendChild(btn);
+        root.appendChild(holder);
+      });
+
+      // Close popovers when clicking elsewhere
+      document.addEventListener('click', (e) => {
+        const inPoint = e.target.closest('.vtl-point');
+        if (!inPoint) document.querySelectorAll('#panel-timeline .vtl-point-pop').forEach(el => el.remove());
+      });
+    }
+
+    const root = document.getElementById('vtl-root');
+    if (root) renderTimeline(root);
+  </script>
+</body>
+</html>
