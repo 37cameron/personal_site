@@ -81,6 +81,12 @@
       min-width:100%; max-width:100vw;
       padding:32px clamp(16px,4vw,64px);
       background:#fff;
+      /* Allow vertical scroll within each panel (fixes mobile when content expands) */
+      overflow-y:auto; overscroll-behavior:contain; -webkit-overflow-scrolling:touch;
+      /* Critical for nested flex scrolling on iOS/Safari */
+      min-height:0;
+      /* Prefer vertical scrolling gestures inside panels */
+      touch-action: pan-y;
     }
     .panel:last-child{border-right:none}
     h1,h2{margin:0 0 16px; line-height:1.2;}
@@ -135,7 +141,7 @@
     footer{padding:24px 0 8px; font-size:12px; color:#111}
 
     /* Vertical Timeline (namespaced: vtl-) */
-  #panel-timeline .vtl-root { position: relative; height: 1800px; max-width: 64rem; margin: 60px auto 40px; }
+  #panel-timeline .vtl-root { position: relative; height: 1800px; max-width: 64rem; margin: 60px auto 40px; padding: 0 12px; }
     #panel-timeline .vtl-backbone {
       position: absolute; left: 50%; transform: translateX(-50%);
       top: 0; bottom: 0; width: 4px;
@@ -182,7 +188,11 @@
       .projects-list h3 { font-size:16px; }
       .projects-list p { font-size:12px; }
       footer { font-size:10px; padding:12px 0 4px; }
-      #panel-timeline .vtl-root { height:1600px; }
+      /* Let timeline content set its own height and scroll naturally on small screens */
+      #panel-timeline { height:auto; min-height:calc(100vh - var(--nav-h)); }
+      #panel-timeline .vtl-root { height:auto; min-height:1200px; }
+      /* Ensure Projects panel scrolls fully on mobile when sections expand */
+      #panel-projects { height:auto; min-height:calc(100vh - var(--nav-h)); }
     }
     /* Allow the Timeline panel to scroll vertically */
 #panel-timeline {
@@ -340,6 +350,10 @@
         p.style.display = (i === index) ? 'block' : 'none';
       });
       setActiveTabs(index);
+      // After switching tabs, if Timeline is active, clamp its labels within bounds
+      if (tabRoutes[index] === 'timeline' && typeof clampTimelineBubbles === 'function') {
+        requestAnimationFrame(clampTimelineBubbles);
+      }
       if(pushState){
         history.pushState({tab:index}, '', `#${tabRoutes[index]}`);
       } else {
@@ -433,7 +447,17 @@
     const wenToggle = document.getElementById('wen-toggle');
     const wenDetails = document.getElementById('wen-details');
     if(wenToggle && wenDetails){
-      wenToggle.addEventListener('click', (e)=>{ e.preventDefault(); wenDetails.style.display = (wenDetails.style.display === 'none') ? 'block' : 'none'; });
+      wenToggle.addEventListener('click', (e)=>{
+        e.preventDefault();
+        const willOpen = (wenDetails.style.display === 'none');
+        wenDetails.style.display = willOpen ? 'block' : 'none';
+        if (willOpen) {
+          // After expanding, nudge into view to encourage vertical scroll on mobile
+          setTimeout(()=>{
+            wenDetails.scrollIntoView({ behavior:'smooth', block:'start' });
+          }, 50);
+        }
+      });
     }
 
     // Photo modal markup (append to body)
@@ -681,7 +705,38 @@
     }
 
     const root = document.getElementById('vtl-root');
-    if (root) renderTimeline(root);
+    // Utility to clamp timeline bubbles within the timeline container width
+    function clampTimelineBubbles() {
+      const container = document.getElementById('panel-timeline');
+      if (!container) return;
+      const bounds = container.getBoundingClientRect();
+      const bubbles = container.querySelectorAll('.vtl-bubble');
+      bubbles.forEach(b => {
+        // Reset transform before measuring
+        b.style.transform = '';
+        const r = b.getBoundingClientRect();
+        let dx = 0;
+        if (r.left < bounds.left + 8) dx = (bounds.left + 8) - r.left;
+        if (r.right > bounds.right - 8) dx = (bounds.right - 8) - r.right;
+        if (dx !== 0) {
+          // accumulate with existing translateX if any
+          const prev = b.getAttribute('data-shift') ? parseFloat(b.getAttribute('data-shift')) : 0;
+          const next = prev + dx;
+          b.style.transform = `translateX(${next}px)`;
+          b.setAttribute('data-shift', String(next));
+        }
+      });
+    }
+
+    if (root) {
+      renderTimeline(root);
+      // Defer clamping to next frame for correct measurements
+      requestAnimationFrame(clampTimelineBubbles);
+    }
+
+    // Re-clamp on resize and orientation changes
+    window.addEventListener('resize', () => requestAnimationFrame(clampTimelineBubbles));
+    window.addEventListener('orientationchange', () => setTimeout(clampTimelineBubbles, 150));
   </script>
 </body>
 </html>
