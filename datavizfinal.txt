@@ -1,0 +1,1 @@
+﻿I cleaned and prepared a NASA landslide dataset in R, then analyzed it using various packages including ggplot2 to create visualizations. I designed a polished poster in Adobe Illustrator and presented it at the School of Information Studiesâ€™ Poster Day

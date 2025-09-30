@@ -191,8 +191,8 @@
       /* Let timeline content set its own height and scroll naturally on small screens */
       #panel-timeline { height:auto; min-height:calc(100vh - var(--nav-h)); }
       #panel-timeline .vtl-root { height:auto; min-height:1200px; }
-      /* Ensure Projects panel scrolls fully on mobile when sections expand */
-      #panel-projects { height:auto; min-height:calc(100vh - var(--nav-h)); }
+  /* Ensure Experience panel scrolls fully on mobile when sections expand */
+  #panel-experience { height:auto; min-height:calc(100vh - var(--nav-h)); }
     }
     /* Allow the Timeline panel to scroll vertically */
 #panel-timeline {
@@ -218,6 +218,11 @@
   #photo-modal .pm-prev{ left:12px; top:50%; transform:translateY(-50%) }
   #photo-modal .pm-next{ right:12px; top:50%; transform:translateY(-50%) }
   #photo-modal .pm-caption{ position:absolute; bottom:18px; left:50%; transform:translateX(-50%); color:#fff; font-size:14px; background:rgba(0,0,0,0.35); padding:6px 10px; border-radius:6px; text-align:center; line-height:1.2 }
+  /* Zoom controls */
+  #photo-modal .pm-zoombar{ position:absolute; bottom:18px; right:18px; display:flex; gap:8px; }
+  #photo-modal .pm-zoombar button{ background:rgba(255,255,255,0.08); color:#fff; border:none; padding:8px 10px; border-radius:6px; cursor:pointer; }
+  /* PDF element in modal */
+  #photo-modal .pm-pdf{ display:none; width:100%; height:88vh; background:#000; border:4px solid rgba(255,255,255,0.06); box-shadow:0 8px 30px rgba(0,0,0,0.6); }
 
   /* On small screens, reduce image footprint and ensure portrait photos fit fully */
   @media (max-width:600px){
@@ -231,6 +236,10 @@
   .photo-thumbs img{ height:80px; width:auto; object-fit:cover; cursor:pointer; border:2px solid rgba(255,255,255,0.06); box-shadow:0 2px 6px rgba(0,0,0,0.2) }
   .photo-thumbs img:focus{ outline:none; box-shadow:0 0 0 2px rgba(99,102,241,0.6) }
   .photo-thumbs img:hover{ transform:scale(1.02) }
+  /* Poster thumb (for PDFs) */
+  .poster-thumb{ display:inline-flex; align-items:center; justify-content:center; height:80px; padding:0 12px; border:2px solid rgba(255,255,255,0.06); background:#f3f4f6; color:#111; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,0.1); font-size:14px; }
+  .poster-thumb:hover{ background:#e5e7eb }
+  .poster-thumb object{ pointer-events:none; display:block; border:0; }
 
   </style>
 </head>
@@ -246,13 +255,13 @@
       <div class="tabs" role="tablist" aria-label="Site Sections">
           <button type="button" data-index="0" role="tab" aria-selected="false">Main</button>
           <button type="button" data-index="1" role="tab" aria-selected="false">Timeline</button>
-          <button type="button" data-index="2" role="tab" aria-selected="false">Projects</button>
+          <button type="button" data-index="2" role="tab" aria-selected="false">Experience</button>
         </div>
 
       <div class="about-inner">
         <h2 class="intro">My name is Cameron Light</h2>
         <h2>and I’m in my fourth and final year at <span class="syracuse">Syracuse University</span>.</h2>
-        <footer>© <span id="year"></span> Cameron Light</footer>
+        <footer>© <span id="year"></span> Cameron Light — Built with the assistance of generative AI</footer>
       </div>
     </section>
 
@@ -261,7 +270,7 @@
       <div class="tabs" role="tablist" aria-label="Site Sections">
         <button type="button" data-index="0" role="tab" aria-selected="false">Main</button>
         <button type="button" data-index="1" role="tab" aria-selected="false">Timeline</button>
-        <button type="button" data-index="2" role="tab" aria-selected="false">Projects</button>
+  <button type="button" data-index="2" role="tab" aria-selected="false">Experience</button>
       </div>
       <div class="vtl-root" id="vtl-root">
         <div class="vtl-backbone" aria-hidden></div>
@@ -269,18 +278,18 @@
       </div>
     </section>
 
-    <!-- Projects -->
-    <section class="panel" id="panel-projects">
+    <!-- Experience -->
+    <section class="panel" id="panel-experience">
       <div class="tabs" role="tablist" aria-label="Site Sections">
         <button type="button" data-index="0" role="tab" aria-selected="false">Main</button>
         <button type="button" data-index="1" role="tab" aria-selected="false">Timeline</button>
-        <button type="button" data-index="2" role="tab" aria-selected="false">Projects</button>
+        <button type="button" data-index="2" role="tab" aria-selected="false">Experience</button>
       </div>
       <div class="panel-inner">
-        <h2>Projects</h2>
-        <div class="project-toggle" role="tablist" aria-label="Project Category">
-        <button type="button" data-filter="personal" aria-pressed="false">Personal</button>
+        <h2>Experience</h2>
+        <div class="project-toggle" role="tablist" aria-label="Experience Category">
         <button type="button" data-filter="academic" class="on" aria-pressed="true">Academic</button>
+        <button type="button" data-filter="personal" aria-pressed="false">Personal</button>
       </div>
       <ul class="projects-list">
         <li data-category="personal">
@@ -325,9 +334,18 @@
           </div>
         </li>
         <li data-category="academic">
-          <h3><a class="project-link" href="#" onclick="event.preventDefault();" aria-disabled="true">Data Vizualisation Final</a></h3>
+          <h3><a class="project-link" href="#" id="dv-toggle">Data Visualization Final</a></h3>
           <p style="margin:6px 0 8px; color:#6b7280; font-size:13px">Spring 2024</p>
-          <p>Methods, results, or impact.</p>
+          <div id="dv-details" style="display:none; margin-top:6px; color:#111;">
+            <p>I cleaned and prepared a NASA landslide dataset in R, then analyzed it using various packages including ggplot2 to create visualizations. I designed a polished poster in Adobe Illustrator and presented it at the School of Information Studies’ Poster Day.</p>
+            <p>Poster: Light_Poster_final.pdf</p>
+            <div style="margin:8px 0 12px;">
+              <span class="poster-thumb" id="dv-open" role="button" tabindex="0" aria-label="View Poster Fullscreen" title="View Poster Fullscreen">View Poster Fullscreen</span>
+              <div style="margin-top:8px;">
+                <a class="project-link" href="Light_Poster_final.pdf" target="_blank" rel="noopener">Open in new tab</a>
+              </div>
+            </div>
+          </div>
         </li>
       </ul>
       </div>
@@ -341,7 +359,7 @@
   const viewport = document.getElementById('viewport');
   // target the tabs inside the panels (we moved them into the About panel)
   const tabs = document.querySelectorAll('.panel .tabs button');
-    const tabRoutes = ['about', 'timeline', 'projects'];
+  const tabRoutes = ['about', 'timeline', 'experience'];
 
     // Button-driven navigation: show/hide panels and update tabs/history
     const panels = Array.from(document.querySelectorAll('.panel'));
@@ -383,7 +401,9 @@
     function indexFromHash(){
       if(location.hash){
         const h = location.hash.replace('#','');
-        const idx = tabRoutes.indexOf(h);
+        // Support old URL hash '#projects' by mapping it to 'experience'
+        const normalized = (h === 'projects') ? 'experience' : h;
+        const idx = tabRoutes.indexOf(normalized);
         return idx === -1 ? 0 : idx;
       }
       return 0;
@@ -460,6 +480,20 @@
       });
     }
 
+    // Data Viz PDF toggle
+    const dvToggle = document.getElementById('dv-toggle');
+    const dvDetails = document.getElementById('dv-details');
+    if(dvToggle && dvDetails){
+      dvToggle.addEventListener('click', (e)=>{
+        e.preventDefault();
+        const willOpen = (dvDetails.style.display === 'none');
+        dvDetails.style.display = willOpen ? 'block' : 'none';
+        if (willOpen) {
+          setTimeout(()=> dvDetails.scrollIntoView({behavior:'smooth', block:'start'}), 50);
+        }
+      });
+    }
+
     // Photo modal markup (append to body)
     const photoModal = document.createElement('div');
     photoModal.id = 'photo-modal';
@@ -468,8 +502,14 @@
         <button class="pm-close" aria-label="Close">✕</button>
         <button class="pm-prev" aria-label="Previous">◀</button>
         <img class="pm-img" src="" alt="Photo">
+        <object class="pm-pdf" type="application/pdf" data="" aria-label="Document"></object>
         <button class="pm-next" aria-label="Next">▶</button>
         <div class="pm-caption"></div>
+        <div class="pm-zoombar">
+          <button class="pm-zoom-out" aria-label="Zoom out">−</button>
+          <button class="pm-zoom-reset" aria-label="Reset zoom">⤾</button>
+          <button class="pm-zoom-in" aria-label="Zoom in">＋</button>
+        </div>
       </div>`;
     document.body.appendChild(photoModal);
 
@@ -477,7 +517,17 @@
     const pmClose = photoModal.querySelector('.pm-close');
     const pmPrev = photoModal.querySelector('.pm-prev');
     const pmNext = photoModal.querySelector('.pm-next');
-    const pmCaption = photoModal.querySelector('.pm-caption');
+  const pmCaption = photoModal.querySelector('.pm-caption');
+  const pmPdf = photoModal.querySelector('.pm-pdf');
+  const pmZoomIn = photoModal.querySelector('.pm-zoom-in');
+  const pmZoomOut = photoModal.querySelector('.pm-zoom-out');
+  const pmZoomReset = photoModal.querySelector('.pm-zoom-reset');
+
+  // Zoom/pan state
+  let zoom = 1;
+  let panX = 0, panY = 0;
+  let isPanning = false, startX = 0, startY = 0, startPanX = 0, startPanY = 0;
+  let mode = 'image'; // 'image' | 'pdf'
 
     // Local images in the workspace (hard-coded from listing)
     const photos = [
@@ -492,7 +542,11 @@
       if(idx < 0) idx = photos.length - 1;
       if(idx >= photos.length) idx = 0;
       photoIndex = idx;
-      pmImg.src = photos[photoIndex];
+  mode = 'image';
+  pmImg.style.display = 'block';
+  pmPdf.style.display = 'none';
+  pmImg.src = photos[photoIndex];
+  resetZoom();
       // Fixed description for all photos plus index
       pmCaption.innerHTML = `MayFly Logger installation at sluice. 09/11/2025<br>${photoIndex+1} / ${photos.length}`;
     }
@@ -510,6 +564,88 @@
     pmClose.addEventListener('click', closePhotoModal);
     pmPrev.addEventListener('click', ()=> showPhoto(photoIndex-1));
     pmNext.addEventListener('click', ()=> showPhoto(photoIndex+1));
+
+    // Helpers for zoom/pan
+    function currentView(){ return mode==='image' ? pmImg : pmPdf; }
+    function applyTransform(){
+      const el = currentView();
+      el.style.transform = `translate(${panX}px, ${panY}px) scale(${zoom})`;
+      el.style.transformOrigin = 'center center';
+      el.style.cursor = zoom > 1 ? 'grab' : 'default';
+    }
+    function resetZoom(){
+      zoom = 1; panX = 0; panY = 0; applyTransform();
+    }
+    function clampPan(){
+      // Prevent panning image fully off-screen (basic clamp)
+  const rect = currentView().getBoundingClientRect();
+      const container = photoModal.querySelector('.pm-content').getBoundingClientRect();
+      const maxX = Math.max(0, (rect.width - container.width) / 2) + 40;
+      const maxY = Math.max(0, (rect.height - container.height) / 2) + 40;
+      panX = Math.min(maxX, Math.max(-maxX, panX));
+      panY = Math.min(maxY, Math.max(-maxY, panY));
+    }
+
+    pmZoomIn.addEventListener('click', ()=>{ zoom = Math.min(5, zoom * 1.25); clampPan(); applyTransform(); });
+    pmZoomOut.addEventListener('click', ()=>{ zoom = Math.max(1, zoom / 1.25); if(zoom===1){panX=0;panY=0;} clampPan(); applyTransform(); });
+    pmZoomReset.addEventListener('click', resetZoom);
+
+    // Mouse pan
+    function addPanHandlers(el){
+      el.addEventListener('mousedown', (e)=>{ if(zoom<=1) return; isPanning = true; el.style.cursor='grabbing'; startX=e.clientX; startY=e.clientY; startPanX=panX; startPanY=panY; e.preventDefault(); });
+      window.addEventListener('mousemove', (e)=>{ if(!isPanning) return; panX = startPanX + (e.clientX - startX); panY = startPanY + (e.clientY - startY); clampPan(); applyTransform(); });
+      window.addEventListener('mouseup', ()=>{ isPanning = false; if(zoom>1) el.style.cursor='grab'; });
+      // Touch
+      let pinchStartDist = null, pinchStartZoom = 1;
+      el.addEventListener('touchstart', (e)=>{
+        if(e.touches.length===1){
+          if(zoom<=1) return; isPanning = true; startX=e.touches[0].clientX; startY=e.touches[0].clientY; startPanX=panX; startPanY=panY;
+        } else if(e.touches.length===2){
+          pinchStartDist = Math.hypot(
+            e.touches[0].clientX - e.touches[1].clientX,
+            e.touches[0].clientY - e.touches[1].clientY
+          );
+          pinchStartZoom = zoom;
+        }
+      }, {passive:false});
+      el.addEventListener('touchmove', (e)=>{
+        if(e.touches.length===1 && isPanning){
+          panX = startPanX + (e.touches[0].clientX - startX);
+          panY = startPanY + (e.touches[0].clientY - startY);
+          clampPan(); applyTransform();
+        } else if(e.touches.length===2 && pinchStartDist){
+          const dist = Math.hypot(
+            e.touches[0].clientX - e.touches[1].clientX,
+            e.touches[0].clientY - e.touches[1].clientY
+          );
+          const factor = dist / pinchStartDist;
+          zoom = Math.max(1, Math.min(5, pinchStartZoom * factor));
+          clampPan(); applyTransform();
+        }
+        e.preventDefault();
+      }, {passive:false});
+      el.addEventListener('touchend', ()=>{ isPanning = false; }, {passive:true});
+    }
+    addPanHandlers(pmImg);
+    addPanHandlers(pmPdf);
+
+    // Touch pan + pinch-zoom basic
+    // Open poster in modal
+    const dvOpen = document.getElementById('dv-open');
+    function openPdfModal(){
+      mode = 'pdf';
+      pmImg.style.display = 'none';
+      pmPdf.style.display = 'block';
+      pmPdf.data = 'Light_Poster_final.pdf#view=FitH';
+      pmCaption.textContent = 'Data Visualization Final Poster';
+      resetZoom();
+      photoModal.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+    if(dvOpen){
+      dvOpen.addEventListener('click', openPdfModal);
+      dvOpen.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); openPdfModal(); }});
+    }
 
     // keyboard navigation while modal open
     window.addEventListener('keydown',(e)=>{
