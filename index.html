@@ -249,12 +249,12 @@
   .photo-thumbs img:focus{ outline:none; box-shadow:0 0 0 2px rgba(99,102,241,0.6) }
   .photo-thumbs img:hover{ transform:scale(1.02) }
   /* Poster thumb (for PDFs) */
-  .poster-thumb{ display:inline-flex; align-items:center; justify-content:center; height:80px; padding:0 12px; border:2px solid rgba(255,255,255,0.06); background:#f3f4f6; color:#111; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,0.1); font-size:14px; }
+  .poster-thumb{ display:inline-flex; align-items:center; justify-content:center; height:80px; padding:0 12px; border:2px solid rgba(255,255,255,0.06); background:#f3f4f6; color:#111; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,0.1); font-size:14px; border-radius:0 }
   .poster-thumb:hover{ background:#e5e7eb }
   .poster-thumb object{ pointer-events:none; display:block; border:0; }
 
   /* Small neutral button for opening PDFs in a new tab (replaces blue link) */
-  .small-btn{ display:inline-block; font-size:12px; padding:4px 6px; background:#f3f4f6; color:#111; border-radius:6px; text-decoration:none; border:1px solid rgba(0,0,0,0.06); }
+  .small-btn{ display:inline-block; font-size:12px; padding:4px 6px; background:#f3f4f6; color:#111; border-radius:0; text-decoration:none; border:1px solid rgba(0,0,0,0.06); }
   .small-btn:hover{ background:#e5e7eb }
   /* Place small buttons under images and center them */
   .thumb-with-btn{ display:block; text-align:center; }
@@ -346,7 +346,9 @@
             <div style="margin:8px 0 12px; display:flex; gap:12px; align-items:flex-start;">
               <div class="thumb-with-btn">
                 <button class="poster-thumb" id="dv-open" type="button" aria-label="View Poster Fullscreen" title="View Poster Fullscreen">View Poster Fullscreen</button>
-                <a class="small-btn" href="Light_Poster_final.pdf" target="_blank" rel="noopener">Open in new tab</a>
+                <div style="margin-top:8px;">
+                  <a class="small-btn" href="Light_Poster_final.pdf" target="_blank" rel="noopener">Open in new tab</a>
+                </div>
               </div>
             </div>
           </div>
